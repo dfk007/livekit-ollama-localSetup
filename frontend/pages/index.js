@@ -18,7 +18,8 @@ export default function Home() {
       const { token } = await res.json();
       // Connect to LiveKit
       room = new Room({ autoSubscribe: true });
-      await room.connect('ws://localhost:7880', token);
+      const livekitUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL || 'ws://localhost:7880';
+      await room.connect(livekitUrl, token);
       setConnected(true);
       // Publish mic audio
       audioTrack = await createLocalAudioTrack();

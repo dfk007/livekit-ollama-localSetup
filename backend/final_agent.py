@@ -21,8 +21,9 @@ async def main():
     print(f"[Agent] Connecting to LiveKit at: {livekit_url}")
     print(f"[Agent] Room: {room_name}, Identity: {agent_identity}")
     
-    # Use Whisper for STT
-    whisper_plugin = openai.WhisperPlugin()
+    # Create plugins
+    silero_plugin = silero.SileroPlugin()
+    
     # Use Ollama for LLM
     llm = openai.LLM.with_ollama(
         model=os.environ.get("MODEL_NAME", "llama3.1"),
@@ -34,8 +35,8 @@ async def main():
     agent = Agent(
         instructions="You are a helpful assistant. Respond naturally and conversationally.",
         llm=llm,
-        stt=whisper_plugin,  # <--- Use Whisper for STT
-        tts=whisper_plugin,  # (or use Silero for TTS if you want)
+        stt=silero_plugin,  # Use Silero for STT
+        tts=silero_plugin,  # Use Silero for TTS
     )
     
     # Create session
@@ -43,12 +44,19 @@ async def main():
         stt=agent.stt,
         tts=agent.tts,
         llm=agent.llm,
-        allow_interruptions=True,
+        allow_interruptions=True
     )
     
     try:
         print("[Agent] Starting session...")
-        await session.start(agent)
+        await session.start(
+            agent,
+            livekit_url=livekit_url,
+            api_key=api_key,
+            api_secret=api_secret,
+            identity=agent_identity,
+            room=room_name
+        )
         print("[Agent] Session started successfully!")
         print("[Agent] Agent is now listening for voice input...")
         print("[Agent] Press Ctrl+C to stop...")
