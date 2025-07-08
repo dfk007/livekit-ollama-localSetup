@@ -39,22 +39,24 @@ async def main():
         tts=silero_plugin,  # Use Silero for TTS
     )
     
-    # Create session with LiveKit connection parameters
+    # Create session
     session = AgentSession(
         stt=agent.stt,
         tts=agent.tts,
         llm=agent.llm,
-        allow_interruptions=True,
-        livekit_url=livekit_url,
-        api_key=api_key,
-        api_secret=api_secret,
-        identity=agent_identity,
-        room=room_name
+        allow_interruptions=True
     )
     
     try:
         print("[Agent] Starting session...")
-        await session.start(agent)
+        await session.start(
+            agent,
+            livekit_url=livekit_url,
+            api_key=api_key,
+            api_secret=api_secret,
+            identity=agent_identity,
+            room=room_name
+        )
         print("[Agent] Session started successfully!")
         print("[Agent] Agent is now listening for voice input...")
         print("[Agent] Press Ctrl+C to stop...")
