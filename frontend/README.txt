@@ -1,0 +1,1 @@
+Place your Next.js frontend here. It will run with `npm run dev`.
